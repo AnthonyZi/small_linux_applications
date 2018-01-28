@@ -1,0 +1,3 @@
+#!/bin/bash
+
+iceweasel -new-window -new-tab -url "https://web.whatsapp.com/"

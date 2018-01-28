@@ -1,0 +1,3 @@
+#!/bin/bash
+
+firefox -new-window -new-tab -url "https://www3.elearning.rwth-aachen.de/SitePages/Start.aspx" -new-tab -url "https://mail.rwth-aachen.de/owa/auth/logon.aspx?replaceCurrent=1&url=https%3a%2f%2fmail.rwth-aachen.de%2fowa%2f%23authRedirect%3dtrue" -new-tab -url "https://www.campus.rwth-aachen.de/office/" -new-tab -url "https://rwth-aachen.sciebo.de/"

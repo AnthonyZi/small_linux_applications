@@ -1,0 +1,20 @@
+#!/bin/bash
+###############################################################################
+### Copyright 2018 Anthony Zimmermann
+### written in Aachen, Oct 2017
+### Dependencies: poppler-utils, find
+### This script can be duplicated as desired if copyright-comment is included.
+### usage: ./searchpdfs "str_part1*str_part2*str_part3"
+###       -> search in all subsequent directories for string-regex in all pdfs
+###############################################################################
+
+searchstring=`echo $1 | sed 's/ /.*/g'`
+echo $searchstring
+
+
+if [ "$2" == "text" ]
+then
+    find . -name "*.pdf" -exec bash -c "pdftotext '{}' - | tr '\n' ' ' | grep --with-filename --label='{}'  --color '$searchstring'" \;
+else
+    find . -name "*.pdf" -exec bash -c "pdftotext '{}' - | tr '\n' ' ' | grep --with-filename --label='{}' -l --color '$searchstring'" \;
+fi
