@@ -28,7 +28,7 @@ def cut_translation_idx(lines):
 
 
 def get_dict_eng_de_html_text(word):
-    process = subprocess.Popen("curl https://www.dict.cc/englisch-deutsch/{}.html".format(word).split(" "), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen("curl https://www.dict.cc/deutsch-englisch/{}.html".format(word).split(" "), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout,stderr = process.communicate()
     html_text = ht.html2text(stdout.decode('utf-8'))
     return html_text
