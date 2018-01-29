@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+import subprocess
+import html2text as ht
+import sys
+
+
+
+
+def get_translation_idx(lines, word):
+    search_str = ["](/deutsch-englisch/", word, ".html"]
+    for n,l in enumerate(lines):
+        if all(s in l for s in search_str):
+            return n
+
+def get_next_translations_idxs(lines):
+    search_str = "/deu"
+    idxs = [i for i in range(len(lines)) if search_str in lines[i]]
+    idxs.pop(0)
+    if len(idxs) == 0:
+        return None
+    return idxs
+
+def cut_translation_idx(lines):
+    search_str = "nach oben |"
+    for n,l in enumerate(lines):
+        if search_str in l:
+            return n
+
+
+def get_dict_eng_de_html_text(word):
+    process = subprocess.Popen("curl https://www.dict.cc/englisch-deutsch/{}.html".format(word).split(" "), shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout,stderr = process.communicate()
+    html_text = ht.html2text(stdout.decode('utf-8'))
+    return html_text
+
+if __name__ == "__main__":
+
+    if "debug" in sys.argv[-1]:
+        debug = True
+        word = "+".join(sys.argv[1:-1])
+    else:
+        debug = False
+        word = "+".join(sys.argv[1:])
+
+    max_num_translations = 30
+    max_num_suggestions = 20
+
+    html_text = get_dict_eng_de_html_text(word)
+
+    html_lines = [l for l in html_text.split("\n") if "[" in l]
+
+
+    idx = get_translation_idx(html_lines, word)
+
+    if debug:
+        for l in [l for l in html_lines]:
+            print(l)
+            pass
+
+    if idx == None:
+        cmd = ["notify-send","{} - no translation found".format(word), "-t","2000"]
+        subprocess.Popen(cmd)
+        sys.exit(1)
+
+    html_lines = html_lines[idx:]
+    idxs2 = get_next_translations_idxs(html_lines)
+    suggestions = []
+    if not idxs2 == None:
+        suggestions = [html_lines[i] for i in idxs2]
+        html_lines = html_lines[:idxs2[0]]
+    idx3 = cut_translation_idx(html_lines)
+    if not idx3 == None:
+        html_lines = html_lines[:idx3]
+
+
+    html_lines = ["]".join(l.split("]")[:-1]).split("{")[0].strip(" [") for l in html_lines]
+    search_word = html_lines[0]
+    translations = html_lines[1:]
+    suggestions = ["]".join(l.split("]")[:-1]).split("{")[0].strip(" [") for l in suggestions]
+
+    translations = translations[:max_num_translations]
+    suggestions = suggestions[:max_num_suggestions]
+
+    translations_str = "\n".join(["  {}".format(l) for l in translations])
+    suggestions_str = "\n".join(["*{}".format(l) for l in suggestions]) if len(suggestions) > 0 else ""
+
+    cmd = ["notify-send","{}\n{}\n{}".format(search_word,translations_str,suggestions_str), "-t","10000"]
+    subprocess.Popen(cmd)

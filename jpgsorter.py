@@ -7,7 +7,7 @@ import collections
 import getopt
 import sys
 
-config_file = "~/.jpgsorter.config"
+config_file = "/home/USER/.jpgsorter.config"
 
 print("load config")
 
@@ -95,7 +95,7 @@ def load_folder_suggestions_dict(folder_suggestions_deque):
 
 def print_folder_suggestions(folders_dict):
     for key in sorted(folders_dict.keys()) :
-        print("(", key, ")", folders_dict[key].replace(documents_folder+"/", ""))
+        print("( {} ) {}".format(key,folders_dict[key].replace("{}/".format(documents_folder), "")))
 
 def update_folder_suggestions(newest_directory):
     f_s_return = [elem for elem in folder_suggestions if not newest_directory == elem]
@@ -136,7 +136,8 @@ def get_filename_suggestions(directory):
 
 def print_filename_suggestions(filename_suggestions_dict):
     for key in sorted(filename_suggestions_dict.keys()):
-        print("(", key, ")", filename_suggestions_dict[key])
+        print("( {} ) {}".format(key,filename_suggestions_dict[key]))
+#        print("(", key, ")", filename_suggestions_dict[key])
 
 
 
