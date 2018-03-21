@@ -1,6 +1,15 @@
 import random
 import sys
 
+
+filename = "tasks.txt"
+#####
+#
+# easily put all tasks into $filename
+# one line each task
+#
+#####
+
 def readlist(file_list):
     with open(file_list, "r") as f:
         lines = f.readlines()
@@ -53,7 +62,5 @@ def work(file_list):
     checkline(file_list, task)
 
 if __name__ == "__main__":
-    filename = "tasks.txt"
-
     while(True):
         work(filename)
